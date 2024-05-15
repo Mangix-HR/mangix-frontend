@@ -11,6 +11,13 @@ export async function loginAdmin(email, password) {
   });
 }
 
+export async function loginColaborador(email, password) {
+  return await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+}
+
 export async function createAccount(email, password) {
   return await supabase.auth.signUp({
     email,
