@@ -1,6 +1,6 @@
 import { toPage } from "../utils/route-builder.js";
 
-const main_routes = [
+const admin_links = [
   {
     id: 1,
     title: "Dashboard",
@@ -50,6 +50,34 @@ const main_routes = [
   },
 ];
 
+const colaborador_links = [
+  {
+    id: 1,
+    title: "Dashboard",
+    icon: '<i class="menu-icon tf-icons bx bx-home-circle"></i>',
+    path: toPage("bater-ponto"),
+  },
+  {
+    id: 2,
+    title: "Lista Ponto",
+    icon: '<i class="menu-icon tf-icons bx bx-home-circle"></i>',
+    path: toPage("lista-pontos"),
+  },
+  {
+    id: 3,
+    title: "Meu perfil",
+    icon: '<i class="menu-icon tf-icons bx bx-home-circle"></i>',
+    path: toPage("meu-perfil"),
+  },
+  {
+    id: 100,
+    title: "Logout",
+    icon: '<i class="menu-icon tf-icons bx bxs-file-html"></i>',
+    action: true,
+  },
+];
+
 export const sidebarMapConfig = {
-  main: main_routes,
+  ADMIN: admin_links,
+  COLABORADOR: colaborador_links,
 };
