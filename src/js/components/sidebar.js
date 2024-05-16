@@ -1,13 +1,14 @@
 import { sidebarMapConfig } from "../config/sidebar-config.js";
 import { logout } from "../services/auth.js";
 import Events from "../utils/Events.js";
+import LocalStorage from "../utils/local-storage.js";
 import { navigate } from "../utils/navigate.js";
 import { toPage } from "../utils/route-builder.js";
 import { PageLoader } from "./loading.js";
 
 export default class Sidebar {
   constructor() {
-    this.routes = sidebarMapConfig[import.meta.env.VITE_APP_LAYOUT];
+    this.routes = sidebarMapConfig[LocalStorage.get("LAYOUT")];
     this.sidebar = document.querySelector(".menu-inner") ?? null;
 
     this.activeId = this.sidebar?.dataset.id;
@@ -28,6 +29,7 @@ export default class Sidebar {
           PageLoader.enable();
           await logout();
 
+          LocalStorage.remove("LAYOUT");
           navigate(toPage("auth/login-adm"));
         }
 

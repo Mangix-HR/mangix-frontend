@@ -6,6 +6,7 @@ import {
   FormErrors,
   handleFormErrors,
 } from "../../utils/error-handler/FormErrors.js";
+import LocalStorage from "../../utils/local-storage.js";
 
 const isFormLoading = (condition) => {
   const button = document.getElementById("button");
@@ -50,6 +51,7 @@ export default class LoginPages {
         const roleValidated = await isValidRole(data, "ADMIN");
 
         if (!error && !roleValidated) {
+          LocalStorage.store("LAYOUT", "ADMIN");
           navigate(toPage("dashboard"));
         }
 
@@ -78,7 +80,8 @@ export default class LoginPages {
         const roleValidated = await isValidRole(data, "COLABORADOR");
 
         if (!error && !roleValidated) {
-          navigate(toPage("dashboard"));
+          LocalStorage.store("LAYOUT", "COLABORADOR");
+          navigate(toPage("bater-ponto"));
         }
 
         isFormLoading(false);
