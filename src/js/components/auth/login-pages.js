@@ -1,8 +1,11 @@
 import Events from "../../utils/Events.js";
-import { loginAdmin } from "../../services/auth.js";
+import { login, logout, validateRoleLogin } from "../../services/auth.js";
 import { navigate } from "../../utils/navigate.js";
 import { toPage } from "../../utils/route-builder.js";
-import { PageLoader } from "../loading.js";
+import {
+  FormErrors,
+  handleFormErrors,
+} from "../../utils/error-handler/FormErrors.js";
 
 const isFormLoading = (condition) => {
   const button = document.getElementById("button");
@@ -17,38 +20,72 @@ const isFormLoading = (condition) => {
   }
 };
 
+async function isValidRole(session, ROLE) {
+  if (!session?.user) return null;
+
+  const user = await validateRoleLogin(session);
+
+  if (user?.role !== ROLE) {
+    await logout();
+    return FormErrors.InvalidRoleError[ROLE];
+  }
+
+  return null;
+}
+
 export default class LoginPages {
   static admin() {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
     const button = document.getElementById("button");
-    const errorLogin = document.getElementById("authError");
 
     Events.$click(button, async () => {
-      if (email.value === "" || password.value === "") {
-        return;
-      }
+      try {
+        if (email.value === "" || password.value === "") {
+          throw new Error(FormErrors.EmptyInputsError);
+        }
 
-      isFormLoading(true);
-      const { error } = await loginAdmin(email.value, password.value);
+        isFormLoading(true);
+        const { data, error } = await login(email.value, password.value);
+        const roleValidated = await isValidRole(data, "ADMIN");
 
-      if (!error) {
-        navigate(toPage("dashboard"));
-      }
+        if (!error && !roleValidated) {
+          navigate(toPage("dashboard"));
+        }
 
-      isFormLoading(false);
-      errorLogin.classList.remove("hide");
-      if (error.name === "AuthApiError") {
-        errorLogin.innerText = "Login/Senha invalido";
+        isFormLoading(false);
+        handleFormErrors(roleValidated, error);
+      } catch (error) {
+        handleFormErrors(error);
       }
     });
   }
 
   static colaborador() {
-    console.log("Colaborator Login Page");
-  }
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const button = document.getElementById("button");
 
-  static ponto() {
-    console.log("Bater Ponto");
+    Events.$click(button, async () => {
+      try {
+        if (email.value === "" || password.value === "") {
+          throw new Error(FormErrors.EmptyInputsError);
+        }
+
+        isFormLoading(true);
+        const { data, error } = await login(email.value, password.value);
+
+        const roleValidated = await isValidRole(data, "COLABORADOR");
+
+        if (!error && !roleValidated) {
+          navigate(toPage("dashboard"));
+        }
+
+        isFormLoading(false);
+        handleFormErrors(roleValidated, error);
+      } catch (error) {
+        handleFormErrors(error);
+      }
+    });
   }
 }
