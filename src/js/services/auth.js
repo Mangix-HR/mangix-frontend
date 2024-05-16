@@ -11,7 +11,19 @@ export async function login(email, password) {
   });
 }
 
+export async function validateRoleLogin(session) {
+  const response = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", session?.user.id)
+    .single();
 
+  if (response?.error) {
+    throw response?.error;
+  }
+
+  return response?.data;
+}
 
 export async function createAccount(email, password) {
   return await supabase.auth.signUp({

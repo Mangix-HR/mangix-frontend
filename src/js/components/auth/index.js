@@ -43,7 +43,6 @@ export default class AuthHandler {
     const pageOptions = Object.freeze({
       adm: LoginPages.admin,
       colaborador: LoginPages.colaborador,
-      ponto: LoginPages.ponto,
     });
 
     for (const [key, action] of Object.entries(pageOptions)) {
