@@ -41,6 +41,8 @@ export default class LoginPages {
     const button = document.getElementById("button");
 
     Events.$click(button, async () => {
+      const ROLE = "ADMIN";
+
       try {
         if (email.value === "" || password.value === "") {
           throw new Error(FormErrors.EmptyInputsError);
@@ -48,10 +50,10 @@ export default class LoginPages {
 
         isFormLoading(true);
         const { data, error } = await login(email.value, password.value);
-        const roleValidated = await isValidRole(data, "ADMIN");
+        const roleValidated = await isValidRole(data, ROLE);
 
         if (!error && !roleValidated) {
-          LocalStorage.store("LAYOUT", "ADMIN");
+          LocalStorage.store("LAYOUT", ROLE);
           navigate(toPage("dashboard"));
         }
 
@@ -69,6 +71,8 @@ export default class LoginPages {
     const button = document.getElementById("button");
 
     Events.$click(button, async () => {
+      const ROLE = "COLABORADOR";
+
       try {
         if (email.value === "" || password.value === "") {
           throw new Error(FormErrors.EmptyInputsError);
@@ -77,10 +81,10 @@ export default class LoginPages {
         isFormLoading(true);
         const { data, error } = await login(email.value, password.value);
 
-        const roleValidated = await isValidRole(data, "COLABORADOR");
+        const roleValidated = await isValidRole(data, ROLE);
 
         if (!error && !roleValidated) {
-          LocalStorage.store("LAYOUT", "COLABORADOR");
+          LocalStorage.store("LAYOUT", ROLE);
           navigate(toPage("bater-ponto"));
         }
 
