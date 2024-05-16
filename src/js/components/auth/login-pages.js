@@ -1,5 +1,5 @@
 import Events from "../../utils/Events.js";
-import { loginAdmin } from "../../services/auth.js";
+import {login } from "../../services/auth.js";
 import { navigate } from "../../utils/navigate.js";
 import { toPage } from "../../utils/route-builder.js";
 import { PageLoader } from "../loading.js";
@@ -30,7 +30,7 @@ export default class LoginPages {
       }
 
       isFormLoading(true);
-      const { error } = await loginAdmin(email.value, password.value);
+      const { error } = await login(email.value, password.value);
 
       if (!error) {
         navigate(toPage("dashboard"));
@@ -45,7 +45,29 @@ export default class LoginPages {
   }
 
   static colaborador() {
-    console.log("Colaborator Login Page");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const button = document.getElementById("button");
+    const errorLogin = document.getElementById("authError");
+
+    Events.$click(button, async () => {
+      if (email.value === "" || password.value === ""){
+        return;
+      }
+
+      isFormLoading(true);
+      const { error } = await login(email.value, password.value);
+
+      if (!error){
+        navigate(toPage("dashboard"));
+      }
+
+      isFormLoading(false);
+      errorLogin.classList.remove("hide");
+      if(error.name === "AuthApiError"){
+        errorLogin.innerText = "Login/Senha invalido";
+      }
+    })
   }
 
   static ponto() {

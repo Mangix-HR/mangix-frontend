@@ -57,11 +57,12 @@
           <a href="/app/auth/bater-ponto/" class="option">CARTÃO PONTO</a>
         </div>
         <form>
-          <label for="usuario">PIN</label>
-          <input type="text" name="usuario" placeholder="PIN" />
+          <label for="usuario">e-mail</label>
+          <input id="email" type="email" name="usuario" placeholder="email" />
           <label for="senha">senha</label>
-          <input type="password" name="senha" placeholder="Senha" />
-          <button type="submit">ENTRAR</button>
+          <input id="password" type="password" name="senha" placeholder="Senha" />
+          <p class="hide error" id="authError"></p>
+          <button id="button" type="submit">ENTRAR</button>
         </form>
       </div>
     </div>
