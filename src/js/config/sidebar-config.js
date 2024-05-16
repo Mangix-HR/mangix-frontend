@@ -51,11 +51,24 @@ const admin_links = [
 ];
 
 const colaborador_links = [
+ 
   {
     id: 1,
     title: "Dashboard",
     icon: '<i class="menu-icon tf-icons bx bx-home-circle"></i>',
     path: toPage("bater-ponto"),
+  },
+  {
+    id: 2,
+    title: "Lista Ponto",
+    icon: '<i class="menu-icon tf-icons bx bx-home-circle"></i>',
+    path: toPage("lista-pontos"),
+  },
+  {
+    id: 3,
+    title: "Meu perfil",
+    icon: '<i class="menu-icon tf-icons bx bx-home-circle"></i>',
+    path: toPage("meu-perfil"),
   },
   {
     id: 100,
