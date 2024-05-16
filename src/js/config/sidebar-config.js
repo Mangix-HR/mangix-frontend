@@ -51,7 +51,6 @@ const admin_links = [
 ];
 
 const colaborador_links = [
- 
   {
     id: 1,
     title: "Dashboard",
