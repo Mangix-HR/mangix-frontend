@@ -77,7 +77,7 @@ const colaborador_links = [
   },
 ];
 
-export const sidebarMapConfig = {
+export const sidebarMapConfig = Object.freeze({
   ADMIN: admin_links,
   COLABORADOR: colaborador_links,
-};
+});
