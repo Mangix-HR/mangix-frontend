@@ -68,7 +68,7 @@
 
     <script src="/src/js/_base.js" type="module"></script>
     <script src="/src/js/components/auth/index.js" type="module"></script>
-    <script src="/src/js/config/theme-config.js"></script>
+    <!-- <script src="/src/js/config/theme-config.js"></script> -->
   </head>
 
   <body>
@@ -900,7 +900,6 @@
                         <th>User</th>
                         <th>Role</th>
                         <th>CPF</th>
-                        <!-- <th>Status</th> -->
                         <th>Pin</th>
                         <th>Action</th>
                     </thead>
@@ -997,13 +996,12 @@
                         />
                         </div> 
                       </div>
-                      <div class="mb-3">
-                        <label class="form-label" for="user-role"
+                      <div class="mb-3 user_role" >
+                        <label class="form-label" for="UserRole"
                           >User Role</label
                         >
-                        <select id="user-role" class="form-select">
-                          <option value="Admin">Admin</option>
-                          <option value="Funcionario">Funcionario</option>
+                        <select id="UserRole" class="form-select text-capitalize">
+                          <option value="">Filtrar por Funcao</option>
                         </select>
                       </div>
                       <button
@@ -1076,7 +1074,7 @@
     <!-- <script src="/src/js/main.js"></script> -->
 
     <!-- Page JS -->
-    <script src="/src/js/components/shared/app-user-list.js"></script>
+    <script src="/src/js/components/shared/app-user-list.js" type="module"></script>
   </body>
 
 </html>

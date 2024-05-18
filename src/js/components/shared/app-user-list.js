@@ -1,40 +1,137 @@
 "use strict";
 
-$(function () {
-  let borderColor, bodyBg, headingColor;
+import DataTable from "datatables.net-dt";
+import { getUsers } from "../../services/users";
+import Events from "../../utils/Events";
 
-  borderColor = config.colors.borderColor;
-  bodyBg = config.colors.bodyBg;
-  headingColor = config.colors.headingColor;
+// $(function () {
+//   let borderColor, bodyBg, headingColor;
 
-  const datatablesUsers = $(".datatables-users");
-  const select2 = $(".select2");
-  const userViewAccountUrl = "app-user-view-account.html";
-  const statusLabels = {
-    1: { title: "Na hora", class: "bg-label-success" },
-    2: { title: "Atraso", class: "bg-label-warning" },
-    3: { title: "Não apareceu", class: "bg-label-danger" },
-  };
+//   borderColor = config.colors.borderColor;
+//   bodyBg = config.colors.bodyBg;
+//   headingColor = config.colors.headingColor;
 
-  if (select2.length) {
-    select2.wrap('<div class="position-relative"></div>').select2({
-      placeholder: "Select Country",
-      dropdownParent: select2.parent(),
-    });
-  }
+//   const datatablesUsers = $(".datatables-users");
+//   const select2 = $(".select2");
+//   const userViewAccountUrl = "app-user-view-account.html";
 
-  if (datatablesUsers.length) {
-    const dataTable = datatablesUsers.DataTable({
-      ajax: assetsPath + "/js/utils/json/user-list.json",
+//   if (select2.length) {
+//     select2.wrap('<div class="position-relative"></div>').select2({
+//       placeholder: "Select Country",
+//       dropdownParent: select2.parent(),
+//     });
+//   }
+
+//   if (datatablesUsers.length) {
+//     const dataTable = datatablesUsers.DataTable({
+//       ajax: assetsPath + "/js/utils/json/user-list.json",
+
+//         // {
+//         //   targets: 4,
+//         //   render: function (data, type, row, meta) {
+//         //     const status = row.status;
+
+//         //     return `<span class="badge ${statusLabels[status].class}">${statusLabels[status].title}</span>`;
+//         //   },
+//         // },
+//       ],
+
+//         // this.api()
+//         //   .columns(4)
+//         //   .every(function () {
+//         //     const column = this;
+//         //     console.log(this);
+//         //     const select = $(
+//         //       '<select id="FilterTransaction" class="form-select text-capitalize"><option value=""> Filtrar por status </option></select>'
+//         //     )
+//         //       .appendTo(".user_status")
+//         //       .on("change", function () {
+//         //         const value = $.fn.dataTable.util.escapeRegex($(this).val());
+//         //         column
+//         //           .search(value ? "^" + value + "$" : "", true, false)
+//         //           .draw();
+//         //       });
+
+//         //     column
+//         //       .data()
+//         //       .unique()
+//         //       .sort()
+//         //       .each(function (value, index) {
+//         //         select.append(
+//         //           `<option value="${statusLabels[value].title}" class="text-capitalize">${statusLabels[value].title}</option>`
+//         //         );
+//         //       });
+//         //   });
+
+//     $(".dt-buttons > .btn-group > button").removeClass("btn-secondary");
+
+//     $(".datatables-users tbody").on("click", ".delete-record", function () {
+//       dataTable.row($(this).parents("tr")).remove().draw();
+//     });
+
+//     setTimeout(() => {
+//       $(".dataTables_filter .form-control").removeClass("form-control-sm");
+//       $(".dataTables_length .form-select").removeClass("form-select-sm");
+//     }, 300);
+//   }
+
+//   const phoneInputs = document.querySelectorAll(".phone-mask");
+//   const addUserForm = document.getElementById("addNewUserForm");
+
+//   if (phoneInputs) {
+//     phoneInputs.forEach(function (input) {
+//       new Cleave(input, { phone: true, phoneRegionCode: "BR" });
+//     });
+//   }
+
+//   FormValidation.formValidation(addUserForm, {
+//     fields: {
+//       userFullname: {
+//         validators: { notEmpty: { message: "Please enter fullname" } },
+//       },
+//       userEmail: {
+//         validators: {
+//           notEmpty: { message: "Please enter your email" },
+//           emailAddress: { message: "The value is not a valid email address" },
+//         },
+//       },
+//     },
+//     plugins: {
+//       trigger: new FormValidation.plugins.Trigger(),
+//       bootstrap5: new FormValidation.plugins.Bootstrap5({
+//         eleValidClass: "",
+//         rowSelector: function (element, form) {
+//           return ".mb-3";
+//         },
+//       }),
+//       submitButton: new FormValidation.plugins.SubmitButton(),
+//       autoFocus: new FormValidation.plugins.AutoFocus(),
+//     },
+//   });
+// });
+
+Events.$onPageLoad(async () => {
+  // const statusLabels = {
+  //   1: { title: "Na hora", class: "bg-label-success" },
+  //   2: { title: "Atraso", class: "bg-label-warning" },
+  //   3: { title: "Não apareceu", class: "bg-label-danger" },
+  // };
+
+  const usersTable = document.querySelector(".datatables-users");
+  const { data } = await getUsers();
+  console.log(data);
+
+  if (usersTable && data) {
+    new DataTable(usersTable, {
       columns: [
         { data: "" },
-        { data: "full_name" },
+        { data: "username" },
         { data: "role" },
         { data: "cpf" },
-        // { data: "status" },
         { data: "pin" },
         { data: "action" },
       ],
+      data,
       columnDefs: [
         {
           className: "control",
@@ -50,8 +147,8 @@ $(function () {
           targets: 1,
           responsivePriority: 4,
           render: function (data, type, row, meta) {
-            const fullName = row.full_name;
-            const email = row.email;
+            const fullName = row.username ?? "John Doe";
+            // const email = row.email;
             const avatar = row.avatar;
             let avatarHtml = "";
             if (avatar) {
@@ -78,37 +175,26 @@ $(function () {
                   </div>
                 </div>
                 <div class="d-flex flex-column">
-                  <a href="${userViewAccountUrl}" class="text-body text-truncate">
+                  <a href="${"#"}" class="text-body text-truncate">
                     <span class="fw-medium">${fullName}</span>
                   </a>
-                  <small class="text-muted">${email}</small>
                 </div>
               </div>
             `;
           },
         },
-        {
-          target: 3,
-          render: function (data, type, row, meta) {
-            const cpf = row.cpf;
 
-            return `
-              <span class='text-truncate'>
-                ${cpf} 
-              </span> 
-            `;
-          },
-        },
         {
           targets: 2,
           render: function (data, type, row, meta) {
             const role = row.role;
+
             return `
               <span class='text-truncate d-flex align-items-center'>
                 ${
                   {
-                    Funcionario: `<span class="badge badge-center rounded-pill bg-label-warning w-px-30 h-px-30 me-2"><i class="bx bx-user bx-xs"></i></span>`,
-                    Admin: `<span class="badge badge-center rounded-pill bg-label-secondary w-px-30 h-px-30 me-2"><i class="bx bx-mobile-alt bx-xs"></i></span>`,
+                    COLABORADOR: `<span class="badge badge-center rounded-pill bg-label-warning w-px-30 h-px-30 me-2"><i class="bx bx-user bx-xs"></i></span>`,
+                    ADMIN: `<span class="badge badge-center rounded-pill bg-label-secondary w-px-30 h-px-30 me-2"><i class="bx bx-mobile-alt bx-xs"></i></span>`,
                   }[role]
                 }
                 ${role}
@@ -116,18 +202,24 @@ $(function () {
             `;
           },
         },
-        // {
-        //   targets: 4,
-        //   render: function (data, type, row, meta) {
-        //     const status = row.status;
-
-        //     return `<span class="badge ${statusLabels[status].class}">${statusLabels[status].title}</span>`;
-        //   },
-        // },
         {
-          targets: 5,
+          targets: 3,
           render: function (data, type, row, meta) {
-            return `<span class="fw-medium">${row.pin}</span>`;
+            const cpf = row.cpf ?? "No CPF Registered";
+
+            return `<span class='text-truncate d-flex align-items-center'>
+              <span class="fw-medium ">${cpf}</span>
+            </span>`;
+          },
+        },
+        {
+          targets: 4,
+          render: function (data, type, row, meta) {
+            return `<span class='text-truncate d-flex align-items-center'>
+              <span class="fw-medium ">${
+                row.pin ?? "No Pin registered..."
+              }</span> 
+            </span>`;
           },
         },
         {
@@ -142,7 +234,7 @@ $(function () {
                 <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i></button>
                 <button class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded me-2"></i></button>
                 <div class="dropdown-menu dropdown-menu-end m-0">
-                  <a href="${userViewAccountUrl}" class="dropdown-item">View</a>
+                  <a href="${"#"}" class="dropdown-item">View</a>
                   <a href="javascript:;" class="dropdown-item">Suspend</a>
                 </div>
               </div>
@@ -360,99 +452,25 @@ $(function () {
           .columns(2)
           .every(function () {
             const column = this;
-            const select = $(
-              '<select id="UserRole" class="form-select text-capitalize"><option value=""> Filtrar por função </option></select>'
-            )
-              .appendTo(".user_role")
-              .on("change", function () {
-                const value = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                column
-                  .search(value ? "^" + value + "$" : "", true, false)
-                  .draw();
-              });
+            const select = $("#UserRole");
 
             column
               .data()
               .unique()
               .sort()
               .each(function (value, index) {
+                console.log(value);
                 select.append(`<option value="${value}">${value}</option>`);
               });
+            select.appendTo(".user_role").on("change", function () {
+              const value = $.fn.dataTable.util.escapeRegex($(this).val());
+
+              console.log(value); // ADMIN OR COLABORADOR
+
+              column.search(value, true, false).draw();
+            });
           });
-
-        // this.api()
-        //   .columns(4)
-        //   .every(function () {
-        //     const column = this;
-        //     console.log(this);
-        //     const select = $(
-        //       '<select id="FilterTransaction" class="form-select text-capitalize"><option value=""> Filtrar por status </option></select>'
-        //     )
-        //       .appendTo(".user_status")
-        //       .on("change", function () {
-        //         const value = $.fn.dataTable.util.escapeRegex($(this).val());
-        //         column
-        //           .search(value ? "^" + value + "$" : "", true, false)
-        //           .draw();
-        //       });
-
-        //     column
-        //       .data()
-        //       .unique()
-        //       .sort()
-        //       .each(function (value, index) {
-        //         select.append(
-        //           `<option value="${statusLabels[value].title}" class="text-capitalize">${statusLabels[value].title}</option>`
-        //         );
-        //       });
-        //   });
       },
-    });
-
-    $(".dt-buttons > .btn-group > button").removeClass("btn-secondary");
-
-    $(".datatables-users tbody").on("click", ".delete-record", function () {
-      dataTable.row($(this).parents("tr")).remove().draw();
-    });
-
-    setTimeout(() => {
-      $(".dataTables_filter .form-control").removeClass("form-control-sm");
-      $(".dataTables_length .form-select").removeClass("form-select-sm");
-    }, 300);
-  }
-
-  const phoneInputs = document.querySelectorAll(".phone-mask");
-  const addUserForm = document.getElementById("addNewUserForm");
-
-  if (phoneInputs) {
-    phoneInputs.forEach(function (input) {
-      new Cleave(input, { phone: true, phoneRegionCode: "BR" });
     });
   }
-
-  FormValidation.formValidation(addUserForm, {
-    fields: {
-      userFullname: {
-        validators: { notEmpty: { message: "Please enter fullname" } },
-      },
-      userEmail: {
-        validators: {
-          notEmpty: { message: "Please enter your email" },
-          emailAddress: { message: "The value is not a valid email address" },
-        },
-      },
-    },
-    plugins: {
-      trigger: new FormValidation.plugins.Trigger(),
-      bootstrap5: new FormValidation.plugins.Bootstrap5({
-        eleValidClass: "",
-        rowSelector: function (element, form) {
-          return ".mb-3";
-        },
-      }),
-      submitButton: new FormValidation.plugins.SubmitButton(),
-      autoFocus: new FormValidation.plugins.AutoFocus(),
-    },
-  });
 });
