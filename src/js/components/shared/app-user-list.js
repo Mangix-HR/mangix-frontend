@@ -195,7 +195,7 @@ Events.$onPageLoad(async () => {
 
   const usersTable = document.querySelector(".datatables-users");
   const { data } = await getUsers();
-
+  console.log(data);
   if (usersTable && data) {
     new DataTable(usersTable, {
       columns: [
