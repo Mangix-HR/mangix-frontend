@@ -60,19 +60,19 @@ const colaborador_links = [
   {
     id: 2,
     title: "Lista Ponto",
-    icon: '<i class="menu-icon tf-icons bx bx-home-circle"></i>',
+    icon: '<i class="menu-icon tf-icons bx bx-list-ul"></i>',
     path: toPage("lista-pontos"),
   },
   {
     id: 3,
     title: "Meu perfil",
-    icon: '<i class="menu-icon tf-icons bx bx-home-circle"></i>',
+    icon: '<i class="menu-icon tf-icons bx bxs-user"></i>',
     path: toPage("meu-perfil"),
   },
   {
     id: 100,
     title: "Logout",
-    icon: '<i class="menu-icon tf-icons bx bxs-file-html"></i>',
+    icon: '<i class="menu-icon tf-icons bx bx-log-out"></i>',
     action: true,
   },
 ];
