@@ -5,9 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
 
+    <!-- Icons -->
+    <link rel="stylesheet" href="/src/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="/src/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="/src/vendor/fonts/flag-icons.css" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="/src/vendor/css/rtl/core.css" />
+    <link rel="stylesheet" href="/src/vendor/css/rtl/theme-default.css" />
+    <link rel="stylesheet" href="/src/css/styles.css" />
+
     <script src="./src/js/components/auth/index.js" type="module"></script>
+
+    <style>
+      .layout-wrapper {
+        background: #ff6b00 !important;
+      }
+
+      .loader-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
   </head>
   <body>
-    <h1 class="loading">Loading...</h1>
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <div class="content-wrapper test">
+          <div
+            class="container-xxl flex-grow-1 container-p-y text-center position-relative"
+          >
+            <div
+              class="loading-container w-100 h-100 d-flex flex-column justify-content-center align-items-center"
+            >
+              <div class="loading mx-auto my-auto">
+                <div class="half"></div>
+                <div class="half"></div>
+              </div>
+
+              <h1 class="text-center text-lightest">Mangix HR</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
