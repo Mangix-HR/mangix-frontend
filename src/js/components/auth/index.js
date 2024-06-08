@@ -2,22 +2,22 @@ import { toPage } from "../../utils/route-builder.js";
 import ErrorPage from "../error-screens.js";
 import { PageLoader } from "../loading.js";
 import LoginPages from "./login-pages.js";
-import SessionManager from "./session.js";
+// import SessionManager from "./session.js";
 import Events from "./../../utils/Events.js";
 import { navigate } from "../../utils/navigate.js";
+import { validateSession } from "../../services/auth.js";
 
 export default class AuthHandler {
   constructor() {
-    this.sessionManager = new SessionManager();
     this.currentUrl = window.location.href.split("/");
 
     this.init();
   }
 
   async init() {
-    const sessionExists = await this.sessionManager.validateSession();
+    const validated = await validateSession();
 
-    if (sessionExists) {
+    if (validated) {
       if (!this.isAuthPage() && !this.isHomePage()) {
         PageLoader.disable();
 

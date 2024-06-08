@@ -30,7 +30,7 @@ export default class Sidebar {
           await logout();
 
           LocalStorage.remove("LAYOUT");
-          navigate(toPage("auth/login-adm"));
+          navigate("/");
         }
 
         path && navigate(path);

@@ -1,39 +1,25 @@
+import MangixApi from "../api/api";
 import { supabase } from "../supabase/supabase";
 
 export async function logout() {
-  return await supabase.auth.signOut();
+  return (await MangixApi.get("/auth/logout")).data;
 }
 
 export async function login(email, password) {
-  return await supabase.auth.signInWithPassword({
+  return await MangixApi.post("/auth/login", {
     email,
     password,
   });
 }
 
-export async function validateRoleLogin(session) {
-  const response = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", session?.user.id)
-    .single();
-
-  if (response?.error) {
-    throw response?.error;
+export async function validateSession() {
+  try {
+    await MangixApi.get("/auth/session");
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
   }
-
-  return response?.data;
-}
-
-export async function createAccount(email, password) {
-  return await supabase.auth.signUp({
-    email,
-    password,
-  });
-}
-
-export async function getSession() {
-  return await supabase.auth.getSession();
 }
 
 export async function getUser(session) {
