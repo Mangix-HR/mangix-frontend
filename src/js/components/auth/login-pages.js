@@ -1,5 +1,5 @@
 import Events from "../../utils/Events.js";
-import { login, logout, validateRoleLogin } from "../../services/auth.js";
+import { login, logout } from "../../services/auth.js";
 import { navigate } from "../../utils/navigate.js";
 import { toPage } from "../../utils/route-builder.js";
 import {
@@ -21,12 +21,10 @@ const isFormLoading = (condition) => {
   }
 };
 
-async function isValidRole(session, ROLE) {
-  if (!session?.user) return null;
+async function isValidRole(role, ROLE) {
+  if (!role) return null;
 
-  const user = await validateRoleLogin(session);
-
-  if (user?.role !== ROLE) {
+  if (role !== ROLE) {
     await logout();
     return FormErrors.InvalidRoleError[ROLE];
   }
@@ -50,7 +48,7 @@ export default class LoginPages {
 
         isFormLoading(true);
         const { data, error } = await login(email.value, password.value);
-        const roleValidated = await isValidRole(data, ROLE);
+        const roleValidated = await isValidRole(data?.profile.role, ROLE);
 
         if (!error && !roleValidated) {
           LocalStorage.store("LAYOUT", ROLE);
@@ -80,8 +78,7 @@ export default class LoginPages {
 
         isFormLoading(true);
         const { data, error } = await login(email.value, password.value);
-
-        const roleValidated = await isValidRole(data, ROLE);
+        const roleValidated = await isValidRole(data?.profile.role, ROLE);
 
         if (!error && !roleValidated) {
           LocalStorage.store("LAYOUT", ROLE);
