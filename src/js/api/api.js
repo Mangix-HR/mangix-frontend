@@ -6,3 +6,4 @@ const MangixApi = axios.create({
 });
 
 export default MangixApi;
+
