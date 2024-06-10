@@ -1,74 +1,34 @@
 "use strict";
 
-import DataTable from "datatables.net-dt";
 import { createUser, deleteUser, getAdminUserList } from "../../services/users";
+import {
+  refreshTable,
+  initializeTable,
+  tableEventsManager,
+} from "../../utils/datatable/dt";
 import Events from "../../utils/Events";
-import "datatables.net-buttons-bs5";
-import "datatables.net-fixedcolumns-bs5";
-import "jquery-datatables-checkboxes";
-import "datatables.net-fixedheader-bs5";
-import { buildColumns, dtConfig } from "../dt-columns";
 
 let dt;
-const tableEvents = [handleFormCreation, handleUserDeletion];
 
-function initializeTable(tableElement, data, columns) {
-  const { dataset, defs } = columns;
-
-  return new DataTable(tableElement, {
-    data,
-    columns: [{ data: "" }, ...dataset],
-    columnDefs: [
-      {
-        className: "control",
-        searchable: false,
-        orderable: false,
-        responsivePriority: 2,
-        targets: 0,
-        render: function (data, type, row, meta) {
-          return "";
-        },
-      },
-      ...defs,
-    ],
-    ...dtConfig,
-  });
-}
-
-const tableEventsManager = (eventsCbs = []) => {
-  eventsCbs.forEach((cb) => {
-    cb();
-  });
+const tableParams = {
+  dt,
+  dataFetcher: await getAdminUserList(),
+  events: [handleFormCreation, handleUserDeletion],
 };
-
-async function refreshTable(eventCb = []) {
-  if (!dt) {
-    console.log("no datatable found");
-    return;
-  }
-
-  const { data } = await getAdminUserList();
-
-  dt.clear();
-  dt.rows.add(data);
-  dt.draw();
-
-  tableEventsManager(eventCb);
-}
 
 Events.$onPageLoad(async () => {
   const usersTable = document.querySelector(".datatables-users");
-  const { data } = await getAdminUserList();
 
-  const columns = buildColumns(["full_name", "role", "cpf", "pin", "action"]);
+  const { data } = await getAdminUserList();
+  const columns = ["full_name", "role", "cpf", "pin", "action"];
 
   if (data) {
     dt = initializeTable(usersTable, data, columns);
 
-    tableEventsManager(tableEvents);
+    tableEventsManager(tableParams.events);
 
     setInterval(async () => {
-      await refreshTable(tableEvents);
+      await refreshTable(tableParams);
     }, 120_000);
   }
 });
@@ -106,7 +66,7 @@ function handleFormCreation() {
       ...formData,
       role,
     }).then(async () => {
-      await refreshTable(tableEvents);
+      await refreshTable(tableParams);
     });
   });
 }
@@ -119,7 +79,7 @@ function handleUserDeletion(dt) {
       e.preventDefault();
       const id = e.target.parentElement.id;
 
-      await deleteUser(id).then(async () => await refreshTable(tableEvents));
+      await deleteUser(id).then(async () => await refreshTable(tableParams));
     });
   });
 }
