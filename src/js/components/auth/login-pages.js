@@ -77,7 +77,10 @@ export default class LoginPages {
         }
 
         isFormLoading(true);
-        const { data, error } = await login(email.value, password.value);
+        const { data, error, message } = await login(
+          email.value,
+          password.value
+        );
         const roleValidated = await isValidRole(data?.profile.role, ROLE);
 
         if (!error && !roleValidated) {
@@ -86,7 +89,7 @@ export default class LoginPages {
         }
 
         isFormLoading(false);
-        handleFormErrors(roleValidated, error);
+        handleFormErrors(roleValidated, message);
       } catch (error) {
         handleFormErrors(error);
       }

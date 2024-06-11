@@ -276,3 +276,7 @@
     transform: rotate(405deg);
   }
 }
+
+.disable-click {
+  pointer-events: none;
+}
