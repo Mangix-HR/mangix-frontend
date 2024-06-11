@@ -4,53 +4,108 @@ import "datatables.net-fixedcolumns-bs5";
 import "jquery-datatables-checkboxes";
 import "datatables.net-fixedheader-bs5";
 
-import { buildColumns } from "../dt-columns";
 import { dtConfig } from "./dt-config";
+import { colsMap } from "../../components/dt-columns";
 
-export function initializeTable(tableElement, data, columns) {
-  const { dataset, defs } = buildColumns(columns);
+export class Dt {
+  constructor(
+    tableElement,
+    {
+      fetcher,
+      columns = [],
+      refreshOn = [],
+      config = {},
+      refreshInterval = 60_000,
+    }
+  ) {
+    this.tableElement = tableElement;
+    this.dataFetcher = fetcher;
+    this.columns = columns;
+    this.refreshOn = refreshOn;
+    this.refreshInterval = refreshInterval;
+    this.dtConfig = { ...dtConfig, ...config };
 
-  return new DataTable(tableElement, {
-    data,
-    columns: [{ data: "" }, ...dataset],
-    columnDefs: [
-      {
-        className: "control",
-        searchable: false,
-        orderable: false,
-        responsivePriority: 2,
-        targets: 0,
-        render: function (data, type, row, meta) {
-          return "";
-        },
-      },
-      ...defs,
-    ],
-    ...dtConfig,
-  });
-}
-
-export const tableEventsManager = (eventsCbs = []) => {
-  eventsCbs.forEach((cb) => {
-    cb();
-  });
-};
-
-export async function refreshTable({
-  dt = null,
-  dataFetcher = null,
-  events = [],
-}) {
-  if (!dataFetcher || !dt) {
-    console.error("no datatable found");
-    return;
+    this.dataTableInstance = undefined;
   }
 
-  const { data } = dataFetcher;
+  async initializeTable() {
+    const { data } = await this.dataFetcher();
+    const { dataset, defs } = this.buildColumns();
 
-  dt.clear();
-  dt.rows.add(data);
-  dt.draw();
+    if (data) {
+      this.dataTableInstance = new DataTable(this.tableElement, {
+        data,
+        columns: [{ data: "" }, ...dataset],
+        columnDefs: [
+          {
+            className: "control",
+            searchable: false,
+            orderable: false,
+            responsivePriority: 2,
+            targets: 0,
+            render: function (data, type, row, meta) {
+              return "";
+            },
+          },
+          ...defs,
+        ],
+        ...dtConfig,
+      });
 
-  tableEventsManager(events);
+      this.handleEventCallbacks();
+
+      setInterval(async () => {
+        await this.refresh();
+      }, this.refreshInterval);
+    }
+
+    return this;
+  }
+
+  handleEventCallbacks() {
+    this.refreshOn.forEach((cb) => {
+      cb();
+    });
+  }
+
+  buildColumns() {
+    if (!this.columns) return;
+
+    return colsMap.reduce((acc, map) => {
+      if (!acc.dataset) {
+        acc.dataset = [];
+      }
+
+      if (!acc.defs) {
+        acc.defs = [];
+      }
+
+      this.columns.forEach((c, index) => {
+        if (c === map.column) {
+          acc.dataset.push({
+            data: map.column,
+          });
+
+          acc.defs.push(map.def(index + 1));
+        }
+      });
+
+      return acc;
+    }, {});
+  }
+
+  async refresh() {
+    if (!this.dataTableInstance) {
+      console.error("datatable  not found");
+      return;
+    }
+
+    const { data } = await this.dataFetcher();
+
+    this.dataTableInstance.clear();
+    this.dataTableInstance.rows.add(data);
+    this.dataTableInstance.draw();
+
+    this.handleEventCallbacks();
+  }
 }

@@ -1,28 +1,4 @@
-export function buildColumns(cols) {
-  return colsMap.reduce((acc, map) => {
-    if (!acc.dataset) {
-      acc.dataset = [];
-    }
-
-    if (!acc.defs) {
-      acc.defs = [];
-    }
-
-    cols.forEach((c, index) => {
-      if (c === map.column) {
-        acc.dataset.push({
-          data: map.column,
-        });
-
-        acc.defs.push(map.def(index + 1));
-      }
-    });
-
-    return acc;
-  }, {});
-}
-
-const colsMap = [
+export const colsMap = [
   {
     column: "full_name",
     def: renderAvatar,

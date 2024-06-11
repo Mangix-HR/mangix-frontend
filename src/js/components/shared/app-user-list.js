@@ -1,36 +1,25 @@
 "use strict";
 
-import { createUser, deleteUser, getAdminUserList } from "../../services/users";
 import {
-  refreshTable,
-  initializeTable,
-  tableEventsManager,
-} from "../../utils/datatable/dt";
-import Events from "../../utils/Events";
+  createUser,
+  deleteUser,
+  getAdminUserList,
+} from "../../services/users.js";
+import { Dt } from "../../utils/datatable/dt.js";
+import Events from "../../utils/Events.js";
 
-let dt;
+const usersTable = document.querySelector(".datatables-users");
 
-const tableParams = {
-  dt,
-  dataFetcher: await getAdminUserList(),
-  events: [handleFormCreation, handleUserDeletion],
-};
+const columns = ["full_name", "role", "cpf", "pin", "action"];
+
+const dt = new Dt(usersTable, {
+  fetcher: getAdminUserList,
+  columns,
+  refreshOn: [handleFormCreation, handleUserDeletion],
+});
 
 Events.$onPageLoad(async () => {
-  const usersTable = document.querySelector(".datatables-users");
-
-  const { data } = await getAdminUserList();
-  const columns = ["full_name", "role", "cpf", "pin", "action"];
-
-  if (data) {
-    dt = initializeTable(usersTable, data, columns);
-
-    tableEventsManager(tableParams.events);
-
-    setInterval(async () => {
-      await refreshTable(tableParams);
-    }, 120_000);
-  }
+  dt.initializeTable();
 });
 
 function handleFormCreation() {
@@ -66,12 +55,12 @@ function handleFormCreation() {
       ...formData,
       role,
     }).then(async () => {
-      await refreshTable(tableParams);
+      await dt.refresh();
     });
   });
 }
 
-function handleUserDeletion(dt) {
+function handleUserDeletion() {
   const deleteRecordButtons = document.querySelectorAll(".delete-record");
 
   deleteRecordButtons.forEach((btn) => {
@@ -79,7 +68,9 @@ function handleUserDeletion(dt) {
       e.preventDefault();
       const id = e.target.parentElement.id;
 
-      await deleteUser(id).then(async () => await refreshTable(tableParams));
+      await deleteUser(id).then(async () => {
+        await dt.refresh();
+      });
     });
   });
 }
