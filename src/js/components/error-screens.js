@@ -10,7 +10,7 @@ const notAuthorizedHtml = `<div class="container-xxl container-p-y">
           that you have provided while login. <br />
           Please contact your site administrator.
         </p>
-        <a href="/app/auth/login-adm/" class="btn btn-primary">Back to Login</a>
+        <a href="/" class="btn btn-primary">Back to Login</a>
         <div class="mt-5">
           <img
             src="/src/assets/img/illustrations/girl-with-laptop-light.png"
