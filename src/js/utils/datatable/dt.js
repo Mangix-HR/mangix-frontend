@@ -13,7 +13,7 @@ export class Dt {
     {
       fetcher,
       columns = [],
-      refreshOn = [],
+      actions = [],
       config = {},
       refreshInterval = 60_000,
     }
@@ -21,7 +21,7 @@ export class Dt {
     this.tableElement = tableElement;
     this.dataFetcher = fetcher;
     this.columns = columns;
-    this.refreshOn = refreshOn;
+    this.actions = actions;
     this.refreshInterval = refreshInterval;
     this.dtConfig = { ...dtConfig, ...config };
 
@@ -63,7 +63,7 @@ export class Dt {
   }
 
   handleEventCallbacks() {
-    this.refreshOn.forEach((cb) => {
+    this.actions.forEach((cb) => {
       cb();
     });
   }

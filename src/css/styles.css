@@ -334,3 +334,7 @@
 .disable-click {
   pointer-events: none;
 }
+
+.text-lg {
+  font-size: 1.5rem !important;
+}
