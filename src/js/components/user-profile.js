@@ -1,4 +1,4 @@
-import { getUserById } from "../services/users";
+import { getUserById, updateUserProfile } from "../services/users";
 import Events from "../utils/Events";
 import LocalStorage from "../utils/local-storage";
 
@@ -6,70 +6,64 @@ const formSubmit = document.getElementById("saveChanges");
 
 Events.$onPageLoad(async () => {
   const userId = LocalStorage.getOrExpire("current_user");
+  const { data: user } = await getUserById(userId);
 
-  const { data } = await getUserById(userId);
+  prefillUser(
+    user,
+    [...accountFormFields, ...profileFormFields],
+    ({ name, value }) => {
+      document.getElementById(`account-${name}`).value = value;
+    }
+  );
 
-  fillUserForm(data);
+  formSubmit.addEventListener("click", async (e) => {
+    e.preventDefault();
+    console.log(user);
+
+    await handleUpdateProfile(user.id);
+  });
 });
 
-function useFields(fieldOptions) {
-  // if (!cb) return;
+const mutation = (fields, cb) => {
+  return fields.reduce((acc, field) => {
+    acc[field] = cb(field);
+    return acc;
+  }, {});
+};
 
-  const mutation = (cb) => {
-    return fieldOptions.reduce((acc, field) => {
-      acc[field] = cb(field);
-      return acc;
-    }, {});
-  };
-
-  const prefillUser = (user, cb) => {
-    for (const [key, value] of Object.entries(user)) {
-      if (fieldOptions.some((field) => field === key)) {
-        cb({ name: key, value });
-      }
+const prefillUser = (user, fields, cb) => {
+  for (const [key, value] of Object.entries(user)) {
+    if (fields.some((field) => field === key)) {
+      console.log(key, value);
+      cb({ name: key, value });
     }
-  };
+  }
+};
 
-  return {
-    prefillUser,
-    mutation,
-  };
-}
-
-const formFields = [
+const profileFormFields = [
   "full_name",
   "cpf",
-  "email",
   "company",
-  "phone",
   "address",
-  "zip",
+  "cep",
   "role",
   "pin",
   "currency",
 ];
 
-function fillUserForm(data) {
-  const { prefillUser } = useFields(formFields);
-  const user = data;
+const accountFormFields = ["email", "phone", "password"];
 
-  prefillUser(user, ({ name, value }) => {
-    document.getElementById(`account-${name}`).value = value;
-  });
-}
+async function handleUpdateProfile(userId) {
+  const { email, phone, ...profileData } = mutation(
+    profileFormFields,
+    (field) => {
+      const inputField = document.getElementById(`account-${field}`)?.value;
 
-async function handleUpdateUser() {
-  const { mutation } = useFields(formFields);
-
-  const formSubmission = mutation(
-    (field) => document.getElementById(`account-${field}`)?.value
+      return inputField === "" ? null : inputField;
+    }
   );
 
-  console.log(formSubmission);
+  console.log(profileData);
+  const res = await updateUserProfile(userId, profileData);
+  console.log(res);
 }
-
-formSubmit.addEventListener("click", async (e) => {
-  e.preventDefault();
-
-  await handleUpdateUser();
-});

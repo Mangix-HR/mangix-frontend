@@ -54,3 +54,12 @@ export async function getUserById(id = null) {
 
   return response.data;
 }
+
+export async function updateUserProfile(id, data) {
+  const response = await MangixApi.patch(
+    `/employee${id ? `/${id}` : ""}`,
+    data
+  ).catch((err) => console.error(err));
+
+  return response;
+}
