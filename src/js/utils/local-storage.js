@@ -3,7 +3,7 @@ export default class LocalStorage {
     localStorage.setItem(key, JSON.stringify(value));
   }
 
-  static storeWithExpiry(key, value, ttl = 360_000) {
+  static storeWithExpiry(key, value, ttl = 300_000) {
     localStorage.setItem(
       key,
       JSON.stringify({

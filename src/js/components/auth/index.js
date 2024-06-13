@@ -34,7 +34,6 @@ export default class AuthHandler {
         return;
       }
 
-      console.log(dashUrl);
       navigate(dashUrl);
     } else {
       if (!this.isHomePage() && !this.isAuthPage()) {

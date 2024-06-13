@@ -30,18 +30,6 @@ export async function createUser({
   return data;
 }
 
-export async function getUserById(id = null) {
-  // if (!id) {data:null};
-
-  const { data, status, statusText } = await MangixApi.get(
-    `/employee${id ? `${id}` : ""}`
-  );
-
-  if (status !== 200) throw new Error(statusText);
-
-  return data;
-}
-
 export async function getAdminUserList() {
   const { data, status, statusText } = await MangixApi.get("/admin/list");
 
@@ -55,6 +43,14 @@ export async function deleteUser(id) {
   const response = await MangixApi.delete(`/employee/account/${id}`);
 
   console.log(response);
+
+  return response.data;
+}
+
+export async function getUserById(id = null) {
+  const response = await MangixApi.get(`/employee${id ? `/${id}` : ""}`).catch(
+    (err) => console.error(err)
+  );
 
   return response.data;
 }

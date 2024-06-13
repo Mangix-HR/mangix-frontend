@@ -73,7 +73,7 @@ function handleEditUser() {
       e.preventDefault();
       const id = e.target.parentElement.id;
 
-      LocalStorage.storeWithExpiry(user_storage_key, id, 60_000);
+      LocalStorage.storeWithExpiry(user_storage_key, id, 600_000);
       navigate(toPage("account-settings"));
     });
   });
