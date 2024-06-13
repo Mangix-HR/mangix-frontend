@@ -18,7 +18,6 @@ Events.$onPageLoad(async () => {
 
   formSubmit.addEventListener("click", async (e) => {
     e.preventDefault();
-    console.log(user);
 
     await handleUpdateProfile(user.id);
   });
@@ -34,7 +33,6 @@ const mutation = (fields, cb) => {
 const prefillUser = (user, fields, cb) => {
   for (const [key, value] of Object.entries(user)) {
     if (fields.some((field) => field === key)) {
-      console.log(key, value);
       cb({ name: key, value });
     }
   }
@@ -63,7 +61,5 @@ async function handleUpdateProfile(userId) {
     }
   );
 
-  console.log(profileData);
-  const res = await updateUserProfile(userId, profileData);
-  console.log(res);
+  await updateUserProfile(userId, profileData);
 }
