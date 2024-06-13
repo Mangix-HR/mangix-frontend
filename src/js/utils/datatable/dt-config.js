@@ -190,14 +190,11 @@ export const dtConfig = {
       .every(function () {
         const column = this;
         const select = $("#UserRoleCreate");
+        const roles = ["ADMIN", "COLABORADOR"];
 
-        column
-          .data()
-          .unique()
-          .sort()
-          .each(function (value, index) {
-            select.append(`<option value="${value}">${value}</option>`);
-          });
+        roles.forEach((role) => {
+          select.append(`<option value="${role}">${role}</option>`);
+        });
 
         select.appendTo(".user_role_create");
       });

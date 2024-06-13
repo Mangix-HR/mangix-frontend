@@ -124,7 +124,7 @@ function renderActionButtons() {
     render: function (data, type, row, meta) {
       return `
       <div class="d-inline-block text-nowrap" id="${row.id}">
-        <button class="btn btn-sm btn-icon"><i class="bx bx-edit"></i></button>
+        <button class="btn btn-sm btn-icon edit-record"><i class="bx bx-edit disable-click"></i></button>
         <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash disable-click"></i></button>
         <button class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded me-2"></i></button>
         <div class="dropdown-menu dropdown-menu-end m-0">
