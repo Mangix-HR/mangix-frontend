@@ -125,8 +125,8 @@ document.addEventListener("DOMContentLoaded", function (e) {
   if (zipCodeInput) new Cleave(zipCodeInput, { delimiter: "", numeral: true });
 
   let uploadedAvatar = document.getElementById("uploadedAvatar");
-  const fileInput = document.querySelector(".account-file-input");
-  const imageResetButton = document.querySelector(".account-image-reset");
+  const fileInput = document.querySelector(".profile-file");
+  const imageResetButton = document.querySelector(".profile-image-reset");
   if (uploadedAvatar) {
     const originalSrc = uploadedAvatar.src;
     fileInput.onchange = () => {

@@ -1,65 +1,92 @@
-import { getUserById, updateUserProfile } from "../services/users";
+import {
+  getUserById,
+  updateUserAccount,
+  updateUserProfile,
+} from "../services/users";
 import Events from "../utils/Events";
 import LocalStorage from "../utils/local-storage";
+import swal from "sweetalert2";
 
-const formSubmit = document.getElementById("saveChanges");
+const accountForm = document.getElementById("account-form");
+const profileForm = document.getElementById("profile-form");
+
+const profileFormFields = {
+  prefix: "profile",
+  fields: [
+    "full_name",
+    "cpf",
+    "company",
+    "address",
+    "cep",
+    "function",
+    "role",
+    "currency",
+    "pin",
+  ],
+};
+
+const accountFormFields = {
+  prefix: "account",
+  fields: ["email", "phone", "password"],
+};
 
 Events.$onPageLoad(async () => {
   const userId = LocalStorage.getOrExpire("current_user");
   const { data: user } = await getUserById(userId);
 
-  prefillUser(
-    user,
-    [...accountFormFields, ...profileFormFields],
-    ({ name, value }) => {
-      document.getElementById(`account-${name}`).value = value;
-    }
-  );
+  prefillUser(user, [profileFormFields, accountFormFields]);
 
-  formSubmit.addEventListener("click", async (e) => {
+  profileForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    await handleUpdateProfile(user.id);
+    const formData = mutation(profileFormFields);
+    await updateUserProfile(userId, formData).then((result) => {
+      console.log(result);
+    });
+  });
+
+  accountForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = mutation(accountFormFields);
+
+    const res = await updateUserAccount(userId, formData);
   });
 });
 
-const mutation = (fields, cb) => {
-  return fields.reduce((acc, field) => {
-    acc[field] = cb(field);
+const getFields = ({ prefix, fields }) => {
+  return fields.map((f) => {
+    return {
+      prefix,
+      suffix: f,
+      element: document.getElementById(`${prefix}-${f}`),
+    };
+  });
+};
+
+const mutation = (formOptions, cb = undefined) => {
+  const fields = getFields(formOptions);
+
+  return fields.reduce((acc, { suffix, element }) => {
+    const inputValue = element?.value ?? "";
+    acc[suffix] = inputValue === "" ? null : inputValue;
+
     return acc;
   }, {});
 };
 
-const prefillUser = (user, fields, cb) => {
+const prefillUser = (user, formFields) => {
+  const allFields = formFields.reduce((acc, fData) => {
+    const fieldElements = getFields(fData).map((fItem) => fItem);
+
+    acc.push(...fieldElements);
+    return acc;
+  }, []);
+
   for (const [key, value] of Object.entries(user)) {
-    if (fields.some((field) => field === key)) {
-      cb({ name: key, value });
-    }
+    allFields.forEach(({ suffix: fieldName, element }) => {
+      if (key === fieldName && element) {
+        element.value = value;
+      }
+    });
   }
 };
-
-const profileFormFields = [
-  "full_name",
-  "cpf",
-  "company",
-  "address",
-  "cep",
-  "role",
-  "pin",
-  "currency",
-];
-
-const accountFormFields = ["email", "phone", "password"];
-
-async function handleUpdateProfile(userId) {
-  const { email, phone, ...profileData } = mutation(
-    profileFormFields,
-    (field) => {
-      const inputField = document.getElementById(`account-${field}`)?.value;
-
-      return inputField === "" ? null : inputField;
-    }
-  );
-
-  await updateUserProfile(userId, profileData);
-}

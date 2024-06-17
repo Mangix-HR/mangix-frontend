@@ -63,3 +63,12 @@ export async function updateUserProfile(id, data) {
 
   return response;
 }
+
+export async function updateUserAccount(id, data) {
+  const response = await MangixApi.patch(
+    `/employee/account${id ? `/${id}` : ""}`,
+    data
+  ).catch((err) => console.error(err));
+
+  return response;
+}
