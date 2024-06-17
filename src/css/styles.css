@@ -160,6 +160,7 @@
   display: flex;
   align-items: center !important;
   justify-content: center !important;
+  flex-direction: column;
 }
 
 #divC {
@@ -337,4 +338,50 @@
 
 .text-lg {
   font-size: 1.5rem !important;
+}
+
+.text-lg {
+  font-size: 1.5rem !important;
+}
+
+.registrar-ponto {
+  width: 550px;
+  height: 80px;
+  font-size: 30px;
+  font-weight: bold;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  margin-top: auto;
+}
+
+.register {
+  height: 300px;
+  width: 60%;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin: 5px auto;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#clock {
+  font-size: 60px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.card-registros {
+  background-clip: padding-box;
+  box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.12);
+  background-color: white;
+  height: 100px;
 }
