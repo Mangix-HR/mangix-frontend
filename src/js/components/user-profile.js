@@ -40,16 +40,27 @@ Events.$onPageLoad(async () => {
     e.preventDefault();
 
     const formData = mutation(profileFormFields);
-    await updateUserProfile(userId, formData).then((result) => {
-      console.log(result);
-    });
+    console.log(formData);
+    const result = await updateUserProfile(userId, formData);
+
+    if (result.status === 200) {
+      showSuccessModal(result.statusText);
+    } else {
+      showErrorModal(result.statusText);
+    }
   });
 
   accountForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = mutation(accountFormFields);
 
-    const res = await updateUserAccount(userId, formData);
+    const result = await updateUserAccount(userId, formData);
+
+    if (result.status === 200) {
+      showSuccessModal(result.statusText);
+    } else {
+      showErrorModal(result.statusText);
+    }
   });
 });
 
@@ -89,4 +100,29 @@ const prefillUser = (user, formFields) => {
       }
     });
   }
+};
+
+const showSuccessModal = (title) => {
+  swal({
+    title: title,
+    text: "User Profile Edited successfully",
+    type: "success",
+    confirmButtonText: "<span class='mx-auto'>Ok</span>",
+    confirmButtonClass: "btn btn-primary mx-2",
+    confirmButtonColor: "",
+    showLoaderOnConfirm: true,
+  });
+};
+
+const showErrorModal = (title) => {
+  swal({
+    title: title,
+    text: "error editing user ",
+    type: "error",
+    confirmButtonText: "<span class='mx-auto'>Close</span>",
+    confirmButtonClass: "btn btn-primary mx-auto",
+    showCancelButton: false,
+    confirmButtonColor: "",
+    showLoaderOnConfirm: true,
+  });
 };

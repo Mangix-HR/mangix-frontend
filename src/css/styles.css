@@ -385,3 +385,22 @@
   background-color: white;
   height: 100px;
 }
+
+.swal2-content {
+  text-align: center !important;
+  margin-top: 1rem !important;
+}
+
+.swal2-buttonswrapper {
+  display: flex !important;
+  justify-content: center !important;
+  margin-top: 1rem !important;
+}
+
+.swal2-modal {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 4px !important;
+}
